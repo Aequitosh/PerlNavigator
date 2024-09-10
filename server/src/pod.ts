@@ -1430,8 +1430,11 @@ export class PodToMarkdownConverter {
     }
 
     #convertHeaderPara(headerPara: HeaderParagraph): Array<string> {
+        // + 2 because we start at an h3 (###) for readability
+        const level = Math.min(headerPara.level + 2, 6);
+
         return [
-            "#".repeat(headerPara.level) + " " + processInlineElements(headerPara.contents)
+            "#".repeat(level) + " " + processInlineElements(headerPara.contents)
         ];
     }
 

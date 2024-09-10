@@ -2218,6 +2218,7 @@ Aliquam erat:
         expect(result).toEqual(expected);
     });
 
+    // headers in markdown start at level 3, but do not exceed level 6
     test("pod headers to markdown headers", () => {
         const fileContents = `\
 =pod
@@ -2240,15 +2241,15 @@ Aliquam erat:
 `;
 
         const expected = `\
-# HEAD ONE
+### HEAD ONE
 
-## HEAD TWO
+#### HEAD TWO
 
-### HEAD THREE
+##### HEAD THREE
 
-#### HEAD FOUR
+###### HEAD FOUR
 
-##### HEAD FIVE
+###### HEAD FIVE
 
 ###### HEAD SIX
 `;
@@ -2336,19 +2337,19 @@ Baz.
 =cut`;
 
         const expected = `\
-# Unordered List
+### Unordered List
 
 - Foo.
 - Bar.
 - Baz.
 
-# Ordered List
+### Ordered List
 
 1. Foo.
 2. Bar.
 3. Baz.
 
-# Unordered List From Items With Text
+### Unordered List From Items With Text
 
 - Foo.
 - Bar.
@@ -2433,7 +2434,7 @@ Qux.
 =cut`;
 
         const expected = `\
-# Nested Lists
+### Nested Lists
 
 - Foo.
 - Bar.
@@ -2724,7 +2725,7 @@ Hello, I'm an ordinary paragraph, and I'm followed by an empty line.
 
 Another one follows after this paragraph.
 
-### Let's interleave more!
+##### Let's interleave more!
 
 - Item followed by empty line.
 
@@ -2971,7 +2972,7 @@ It really isn't.
         const expected = `\
 This stuff in here gets treated as regular POD.
 
-### Including commands.
+##### Including commands.
 
 - Not gonna test this too thoroughly.
 42. Because this isn't handled in any special manner.
@@ -3013,9 +3014,9 @@ Consectetur adipiscing elit.
 `;
 
         const expected = `\
-# Foo.
+### Foo.
 
-## Bar.
+#### Bar.
 
 Lorem ipsum dolor sit amet.
 
@@ -3075,7 +3076,7 @@ This is where things get interesting.
 \`\`\`
 ... with non-data data paragraphs.
 
-# So it's possible to put headers in here, for example.
+### So it's possible to put headers in here, for example.
 
 <!-- begin inner-data -->
 Also, you can add more begin-end blocks deeper inside all of this.
@@ -3121,7 +3122,7 @@ And B<<<<<     this >>>>> one too.
 `;
 
         const expected = `\
-# **Bold header.**
+### **Bold header.**
 
 **This paragraph is in bold.**
 
@@ -3163,7 +3164,7 @@ And I<<<<<     this >>>>> one too.
 `;
 
         const expected = `\
-# *Header in italics.*
+### *Header in italics.*
 
 *This paragraph is in italics.*
 
@@ -3205,7 +3206,7 @@ And I<B<< this >>> one too.
 `;
 
         const expected = `\
-# ***Header in bold italics.*** ***In two different ways.***
+### ***Header in bold italics.*** ***In two different ways.***
 
 ***This paragraph is in bold italics.***
 
@@ -3247,7 +3248,7 @@ C<Same goes for this one.> C<Twice.> C<Thrice.>
 `;
 
         const expected = `\
-# \`Headers allow inline code.\` Doesn't matter \`where\`.
+### \`Headers allow inline code.\` Doesn't matter \`where\`.
 
 \`This paragraph is inline code.\`
 
