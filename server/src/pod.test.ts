@@ -921,6 +921,7 @@ describe("complex POD processing cases", () => {
     // We forcibly omit the `message` property here so the object matcher ignores it.
     const processingError = { kind: "processingerror" } as PodProcessingError;
 
+    // Spec requires matching =end, but we choose to tolerate this
     test("unclosed data block", () => {
         const fileContents = `\
 =pod
@@ -930,11 +931,29 @@ describe("complex POD processing cases", () => {
 =cut
 `;
 
+        const expected: PodDocument = {
+            kind: "poddocument",
+            blocks: [
+                {
+                    kind: "podblock",
+                    paragraphs: [
+                        {
+                            kind: "datablock",
+                            formatname: "foo",
+                            paragraphs: [],
+                            parameter: "",
+                        },
+                    ],
+                },
+            ],
+        };
+
         const result = parser.parse(fileContents);
 
-        expect(processor.process(result as RawPodDocument)).toMatchObject(processingError);
+        expect(processor.process(result as RawPodDocument)).toMatchObject(expected);
     });
 
+    // Spec requires matching =end, but we choose to tolerate this
     test("unclosed normal data block", () => {
         const fileContents = `\
 =pod
@@ -944,11 +963,29 @@ describe("complex POD processing cases", () => {
 =cut
 `;
 
+        const expected: PodDocument = {
+            kind: "poddocument",
+            blocks: [
+                {
+                    kind: "podblock",
+                    paragraphs: [
+                        {
+                            kind: "normaldatablock",
+                            formatname: ":foo",
+                            paragraphs: [],
+                            parameter: "",
+                        },
+                    ],
+                },
+            ],
+        };
+
         const result = parser.parse(fileContents);
 
-        expect(processor.process(result as RawPodDocument)).toMatchObject(processingError);
+        expect(processor.process(result as RawPodDocument)).toMatchObject(expected);
     });
 
+    // Spec requires matching =back, but we choose to tolerate this
     test("unclosed over block", () => {
         const fileContents = `\
 =pod
@@ -958,9 +995,25 @@ describe("complex POD processing cases", () => {
 =cut
 `;
 
+        const expected: PodDocument = {
+            kind: "poddocument",
+            blocks: [
+                {
+                    kind: "podblock",
+                    paragraphs: [
+                        {
+                            kind: "overblock",
+                            level: 42,
+                            paragraphs: [],
+                        },
+                    ],
+                },
+            ],
+        };
+
         const result = parser.parse(fileContents);
 
-        expect(processor.process(result as RawPodDocument)).toMatchObject(processingError);
+        expect(processor.process(result as RawPodDocument)).toMatchObject(expected);
     });
 
     test("over blocks with invalid indent levels", () => {
